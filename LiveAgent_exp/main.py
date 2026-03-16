@@ -352,5 +352,5 @@ async def websocket_endpoint(
 if __name__ == "__main__":
     import uvicorn
 
-    print("\n  App running at: http://localhost:8000\n")
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    print("\n  App running at: http://localhost:8080\n")
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
