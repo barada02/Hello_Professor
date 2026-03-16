@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 
 const BINARY_MAGIC_1 = 0x4c
@@ -55,6 +55,7 @@ function App() {
   const [framesSent, setFramesSent] = useState(0)
 
   const websocketRef = useRef(null)
+  const connectWebSocketRef = useRef(() => {})
   const reconnectTimerRef = useRef(null)
 
   const audioRecorderCtxRef = useRef(null)
@@ -73,14 +74,14 @@ function App() {
   const userId = useMemo(() => `student-${makeId()}`, [])
   const sessionId = useMemo(() => `hello-prof-${makeId()}`, [])
 
-  const addSystemMessage = (text) => {
+  const addSystemMessage = useCallback((text) => {
     setMessages((previous) => [
       ...previous,
       { id: makeId(), role: 'system', text, final: true },
     ])
-  }
+  }, [])
 
-  const addEvent = (direction, summary, payload) => {
+  const addEvent = useCallback((direction, summary, payload) => {
     setEvents((previous) => [
       ...previous,
       {
@@ -91,7 +92,7 @@ function App() {
         payload,
       },
     ])
-  }
+  }, [])
 
   const sendTextPayload = (payload) => {
     const websocket = websocketRef.current
@@ -153,7 +154,7 @@ function App() {
     lastAssistantMessageIdRef.current = null
   }
 
-  const connectWebSocket = () => {
+  const connectWebSocket = useCallback(() => {
     if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
       return
     }
@@ -254,9 +255,21 @@ function App() {
       setConnectionState('disconnected')
       websocketRef.current = null
       addSystemMessage('WebSocket closed; retrying in 5s')
-      reconnectTimerRef.current = window.setTimeout(connectWebSocket, 5000)
+      reconnectTimerRef.current = window.setTimeout(() => {
+        connectWebSocketRef.current()
+      }, 5000)
     }
-  }
+  }, [
+    addEvent,
+    addSystemMessage,
+    affectiveDialog,
+    backendHttpBase,
+    proactivity,
+    sessionId,
+    userId,
+  ])
+
+  connectWebSocketRef.current = connectWebSocket
 
   const stopAudio = () => {
     if (audioRecorderNodeRef.current) {
@@ -503,7 +516,6 @@ function App() {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     connectWebSocket()
 
@@ -517,7 +529,7 @@ function App() {
       stopAudio()
       stopLiveCamera()
     }
-  }, [])
+  }, [connectWebSocket])
 
   return (
     <div className="app">
