@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADK Gemini Live API Toolkit Demo</title>
+    <link rel="stylesheet" href="/v1/ui/static/css/style.css">
+    <script src="/v1/ui/static/js/app.js" type="module"></script>
+  </head>
+
+  <body>
+    <header class="app-header">
+      <div class="header-left">
+        <h1>ADK Gemini Live API Toolkit Demo</h1>
+        <div class="subtitle">Real-time bidirectional streaming with Google ADK</div>
+      </div>
+
+      <div class="header-controls">
+        <div class="header-options">
+          <label class="header-checkbox" title="Enable model to proactively respond without explicit prompts (Native audio models only)">
+            <input type="checkbox" id="enableProactivity">
+            <span>Proactivity</span>
+          </label>
+          <label class="header-checkbox" title="Enable model to detect and adapt to emotional cues (Native audio models only)">
+            <input type="checkbox" id="enableAffectiveDialog">
+            <span>Affective Dialog</span>
+          </label>
+        </div>
+
+        <div class="connection-status">
+          <span class="status-indicator" id="statusIndicator"></span>
+          <span id="statusText">Connecting...</span>
+        </div>
+
+        <button type="button" id="toggleConsoleButton" class="header-btn">Console</button>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <div class="container">
+        <div id="messages" class="messages"></div>
+
+        <div class="input-container">
+          <form id="messageForm">
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="message"
+                name="message"
+                placeholder="Type your message here..."
+                autocomplete="off"
+              />
+              <button type="submit" id="sendButton" disabled>Send</button>
+              <button type="button" id="startAudioButton">Start Audio</button>
+              <button type="button" id="cameraButton">📷 Camera</button>
+              <button type="button" id="liveCameraButton">🎥 Start Live Cam</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <aside id="consoleDrawer" class="console-drawer">
+      <div class="console-panel">
+        <div class="console-header">
+          <h2>Event Console</h2>
+          <div class="console-controls">
+            <label class="console-checkbox">
+              <input type="checkbox" id="showAudioEvents">
+              <span>Show audio</span>
+            </label>
+            <button id="closeConsoleDrawer" class="console-clear-btn">Close</button>
+            <button id="clearConsole" class="console-clear-btn">Clear</button>
+          </div>
+        </div>
+        <div id="consoleContent" class="console-content"></div>
+      </div>
+    </aside>
+
+    <div id="liveCameraPanel" class="live-camera-panel floating">
+      <div class="live-camera-header">
+        <span id="liveCameraStatus">Live camera: stopped</span>
+        <div class="live-camera-actions">
+          <span id="liveCameraStats">Frames sent: 0</span>
+          <button type="button" id="closeLiveCameraPanel" class="console-clear-btn">Hide</button>
+        </div>
+      </div>
+      <video id="liveCameraFeed" autoplay playsinline muted></video>
+    </div>
+
+    <!-- Camera Preview Modal -->
+    <div id="cameraModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Camera Preview</h3>
+          <button id="closeCameraModal" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <video id="cameraPreview" autoplay playsinline></video>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelCamera" class="btn-secondary">Cancel</button>
+          <button id="captureImage" class="btn-primary">📷 Send Image</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

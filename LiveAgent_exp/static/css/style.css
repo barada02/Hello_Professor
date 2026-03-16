@@ -1,0 +1,643 @@
+/* Modern compact chat layout: slim header, chat-first viewport,
+   collapsible console drawer, floating live camera panel */
+
+:root {
+  --bg: #121318;
+  --surface: #1b1d26;
+  --surface-soft: #232633;
+  --panel: #171923;
+  --border: #2f3344;
+  --text: #e7eaf5;
+  --muted: #98a0bd;
+  --primary: #4c83f0;
+  --primary-hover: #3b6fd4;
+  --success: #34a853;
+  --danger: #ea4335;
+  --warning: #fbbc05;
+  --user-bg: #315fc2;
+  --agent-bg: #232838;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header {
+  height: 64px;
+  min-height: 64px;
+  background: linear-gradient(135deg, #5a6ed8 0%, #7047b4 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  gap: 12px;
+}
+
+.header-left h1 {
+  font-size: 1.05rem;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 0.78rem;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #f1f4ff;
+  opacity: 0.95;
+  user-select: none;
+}
+
+.header-checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #fff;
+}
+
+.connection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(52, 168, 83, 0.7);
+}
+
+.status-indicator.disconnected {
+  background: var(--danger);
+  box-shadow: none;
+}
+
+.header-btn {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.header-btn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.app-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to bottom, #141722 0%, #11131c 100%);
+}
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.messages::-webkit-scrollbar,
+.console-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-thumb,
+.console-content::-webkit-scrollbar-thumb {
+  background: #32384a;
+  border-radius: 999px;
+}
+
+.message {
+  display: flex;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.agent {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: min(70ch, 80%);
+  padding: 10px 13px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.message.user .bubble {
+  background: var(--user-bg);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.message.agent .bubble {
+  background: var(--agent-bg);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.bubble-text {
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.typing-indicator {
+  margin-left: 4px;
+  opacity: 0.8;
+}
+
+.typing-indicator::after {
+  content: "...";
+  animation: dots 1s infinite;
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: ".";
+  }
+
+  40% {
+    content: "..";
+  }
+
+  60%,
+  100% {
+    content: "...";
+  }
+}
+
+.message.interrupted .bubble {
+  opacity: 0.65;
+  border-left: 3px solid var(--warning);
+}
+
+.message.transcription .bubble {
+  opacity: 0.92;
+}
+
+.bubble.image-bubble {
+  padding: 6px;
+}
+
+.bubble-image {
+  max-width: min(440px, 72vw);
+  max-height: 340px;
+  border-radius: 8px;
+  display: block;
+}
+
+.system-message {
+  align-self: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 4px 8px;
+  font-style: italic;
+}
+
+.input-container {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px;
+}
+
+.input-wrapper {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto;
+  gap: 8px;
+}
+
+#message {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #11141e;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 11px 14px;
+  font-size: 1rem;
+}
+
+#message:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(76, 131, 240, 0.2);
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+#sendButton {
+  background: var(--primary);
+  color: #fff;
+}
+
+#sendButton:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+#startAudioButton {
+  background: var(--success);
+  color: #fff;
+}
+
+#cameraButton {
+  background: #e64937;
+  color: #fff;
+}
+
+#liveCameraButton {
+  background: #f5ba00;
+  color: #111;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Right side console drawer */
+.console-drawer {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  height: calc(100vh - 64px);
+  width: 360px;
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+  z-index: 50;
+}
+
+.console-drawer.open {
+  transform: translateX(0);
+}
+
+.console-panel {
+  height: 100%;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.console-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.console-header h2 {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c8cde2;
+}
+
+.console-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.console-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b7bfd8;
+  font-size: 0.8rem;
+}
+
+.console-clear-btn {
+  background: #2a3042;
+  color: #dce2fa;
+  border: 1px solid #424b68;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+}
+
+.console-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.console-entry {
+  border: 1px solid #30374d;
+  background: #1c2232;
+  border-left: 3px solid #4e5c80;
+  border-radius: 8px;
+  padding: 7px;
+  margin-bottom: 8px;
+}
+
+.console-entry.outgoing {
+  border-left-color: #4c83f0;
+}
+
+.console-entry.incoming {
+  border-left-color: #3bb56f;
+}
+
+.console-entry.error {
+  border-left-color: var(--danger);
+}
+
+.console-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.console-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-entry-emoji {
+  width: 14px;
+  text-align: center;
+}
+
+.console-expand-icon {
+  color: #9ca5c8;
+  width: 10px;
+}
+
+.console-entry-type {
+  color: #b7c1e4;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+
+.console-entry-author {
+  border: 1px solid #4a5577;
+  background: rgba(74, 85, 119, 0.3);
+  color: #d8dff7;
+  border-radius: 6px;
+  padding: 1px 5px;
+  font-size: 0.65rem;
+}
+
+.console-entry-timestamp {
+  color: #95a0c5;
+  font-size: 0.66rem;
+}
+
+.console-entry-content {
+  color: #e6eaff;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.console-entry-json {
+  margin-top: 6px;
+  background: #11141f;
+  border: 1px solid #2e3650;
+  border-radius: 6px;
+  padding: 6px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.console-entry-json.collapsed {
+  display: none;
+}
+
+.console-entry-json pre {
+  color: #9fd8ff;
+}
+
+.console-entry.expandable {
+  cursor: pointer;
+}
+
+/* Floating live camera panel */
+.live-camera-panel.floating {
+  position: fixed;
+  right: 16px;
+  bottom: 88px;
+  width: min(360px, calc(100vw - 32px));
+  background: rgba(20, 23, 34, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 10px;
+  z-index: 40;
+  display: none;
+}
+
+.live-camera-panel.floating.active {
+  display: block;
+}
+
+.live-camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #d4daf1;
+  font-size: 0.8rem;
+}
+
+.live-camera-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#liveCameraFeed {
+  width: 100%;
+  max-height: 240px;
+  border-radius: 10px;
+  background: #000;
+  object-fit: cover;
+}
+
+/* Camera modal */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  width: min(680px, 96vw);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.close-btn {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-size: 1.4rem;
+}
+
+.modal-body {
+  background: #000;
+  padding: 12px;
+}
+
+#cameraPreview {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #2a3042;
+  color: #fff;
+}
+
+@media (max-width: 980px) {
+  .header-options {
+    display: none;
+  }
+
+  .console-drawer {
+    width: min(420px, 100vw);
+  }
+}
+
+@media (max-width: 760px) {
+  .app-header {
+    height: auto;
+    min-height: 64px;
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .input-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #message {
+    grid-column: 1 / -1;
+  }
+
+  .console-drawer {
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .live-camera-panel.floating {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    bottom: 90px;
+  }
+}
