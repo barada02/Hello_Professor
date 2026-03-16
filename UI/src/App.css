@@ -1,0 +1,275 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0f1220;
+  color: #eef1ff;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #252a42;
+  background: #171c30;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.app-header p {
+  margin: 4px 0 0;
+  color: #b7bfdc;
+  font-size: 0.92rem;
+}
+
+.status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
+  font-size: 0.9rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #d04653;
+}
+
+.status-dot.ok {
+  background: #2fb86a;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #252a42;
+  background: #11152a;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #c5cceb;
+}
+
+.controls .check {
+  flex-direction: row;
+  align-items: center;
+  margin-top: 18px;
+  gap: 6px;
+}
+
+.controls input {
+  border: 1px solid #364066;
+  border-radius: 8px;
+  background: #0d1124;
+  color: #eef1ff;
+  padding: 9px 10px;
+  min-width: 220px;
+}
+
+.controls button,
+.action-row button,
+.composer button {
+  border: 1px solid #435087;
+  background: #2f4ec9;
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.main-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  grid-template-areas:
+    'chat camera'
+    'chat events';
+  gap: 12px;
+  padding: 12px;
+}
+
+.panel {
+  border: 1px solid #252a42;
+  border-radius: 12px;
+  background: #161b2f;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  padding: 12px;
+  border-bottom: 1px solid #252a42;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.chat-panel {
+  grid-area: chat;
+}
+
+.camera-panel {
+  grid-area: camera;
+}
+
+.event-panel {
+  grid-area: events;
+}
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bubble {
+  max-width: 88%;
+  padding: 9px 11px;
+  border-radius: 10px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: #3a63da;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: #252c49;
+}
+
+.bubble.system {
+  align-self: center;
+  background: #273359;
+  color: #c9d3ff;
+  font-size: 0.88rem;
+}
+
+.bubble-image {
+  max-width: min(420px, 70vw);
+  border-radius: 8px;
+  display: block;
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #252a42;
+}
+
+.composer input {
+  border: 1px solid #364066;
+  border-radius: 8px;
+  background: #0d1124;
+  color: #eef1ff;
+  padding: 10px;
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.live-video {
+  width: calc(100% - 24px);
+  margin: 12px;
+  border-radius: 10px;
+  background: #07090f;
+  border: 1px solid #2a3358;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.camera-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px 12px;
+  color: #b4bddf;
+  font-size: 0.86rem;
+}
+
+.events {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event {
+  border: 1px solid #30385e;
+  border-left-width: 3px;
+  border-radius: 8px;
+  background: #131933;
+  padding: 6px 8px;
+}
+
+.event.up {
+  border-left-color: #5d8aff;
+}
+
+.event.down {
+  border-left-color: #43be7a;
+}
+
+.event.system {
+  border-left-color: #d7a135;
+}
+
+.event summary {
+  cursor: pointer;
+  font-size: 0.84rem;
+  color: #d8dff9;
+}
+
+.event summary span {
+  color: #98a5d6;
+  margin-left: 8px;
+}
+
+.event pre {
+  margin: 8px 0 0;
+  padding: 8px;
+  border-radius: 6px;
+  background: #0c1022;
+  color: #b6dcff;
+  overflow: auto;
+  font-size: 0.76rem;
+}
+
+@media (max-width: 980px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'chat'
+      'camera'
+      'events';
+  }
+}
